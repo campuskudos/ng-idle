@@ -1,12 +1,12 @@
-angular.module('ngIdle.localStorage', [])
+angular.module('ngIdle.sessionStorage', [])
   .service('IdleStorageAccessor', ['$window', function($window) {
     return {
       get: function() {
-        return $window.localStorage;
+        return $window.sessionStorage;
       }
     }
   }])
-  .service('IdleLocalStorage', ['IdleStorageAccessor', function(IdleStorageAccessor) {
+  .service('IdleSessionStorage', ['IdleStorageAccessor', function(IdleStorageAccessor) {
     function AlternativeStorage() {
       var storageMap = {};
 
