@@ -1,4 +1,4 @@
-angular.module('ngIdle.idle', ['ngIdle.keepalive', 'ngIdle.localStorage'])
+angular.module('ngIdle.idle', ['ngIdle.keepalive', 'ngIdle.sessionStorage'])
   .provider('Idle', function() {
     var options = {
       idle: 20 * 60, // in seconds (default is 20min)
@@ -43,8 +43,8 @@ angular.module('ngIdle.idle', ['ngIdle.keepalive', 'ngIdle.localStorage'])
       options.keepalive = enabled === true;
     };
 
-    this.$get = ['$interval', '$log', '$rootScope', '$document', 'Keepalive', 'IdleLocalStorage', '$window',
-      function($interval, $log, $rootScope, $document, Keepalive, LocalStorage, $window) {
+    this.$get = ['$interval', '$log', '$rootScope', '$document', 'Keepalive', 'IdleSessionStorage', '$window',
+      function($interval, $log, $rootScope, $document, Keepalive, SessionStorage, $window) {
         var state = {
           idle: null,
           timeout: null,
@@ -133,14 +133,14 @@ angular.module('ngIdle.idle', ['ngIdle.keepalive', 'ngIdle.localStorage'])
         }
 
         function getExpiry() {
-          var obj = LocalStorage.get('expiry');
+          var obj = SessionStorage.get('expiry');
 
           return obj && obj.time ? new Date(obj.time) : null;
         }
 
         function setExpiry(date) {
-          if (!date) LocalStorage.remove('expiry');
-          else LocalStorage.set('expiry', {id: id, time: date});
+          if (!date) SessionStorage.remove('expiry');
+          else SessionStorage.set('expiry', {id: id, time: date});
         }
 
         var svc = {

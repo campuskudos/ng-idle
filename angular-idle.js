@@ -6,7 +6,7 @@
 */
 (function(window, angular, undefined) {
 'use strict';
-angular.module('ngIdle', ['ngIdle.keepalive', 'ngIdle.idle', 'ngIdle.countdown', 'ngIdle.title', 'ngIdle.localStorage']);
+angular.module('ngIdle', ['ngIdle.keepalive', 'ngIdle.idle', 'ngIdle.countdown', 'ngIdle.title', 'ngIdle.sessionStorage']);
 angular.module('ngIdle.keepalive', [])
   .provider('Keepalive', function() {
     var options = {
@@ -78,7 +78,7 @@ angular.module('ngIdle.keepalive', [])
     ];
   });
 
-angular.module('ngIdle.idle', ['ngIdle.keepalive', 'ngIdle.localStorage'])
+angular.module('ngIdle.idle', ['ngIdle.keepalive', 'ngIdle.SessionStorage'])
   .provider('Idle', function() {
     var options = {
       idle: 20 * 60, // in seconds (default is 20min)
@@ -123,8 +123,8 @@ angular.module('ngIdle.idle', ['ngIdle.keepalive', 'ngIdle.localStorage'])
       options.keepalive = enabled === true;
     };
 
-    this.$get = ['$interval', '$log', '$rootScope', '$document', 'Keepalive', 'IdleLocalStorage', '$window',
-      function($interval, $log, $rootScope, $document, Keepalive, LocalStorage, $window) {
+    this.$get = ['$interval', '$log', '$rootScope', '$document', 'Keepalive', 'IdleSessionStorage', '$window',
+      function($interval, $log, $rootScope, $document, Keepalive, SessionStorage, $window) {
         var state = {
           idle: null,
           timeout: null,
@@ -213,14 +213,14 @@ angular.module('ngIdle.idle', ['ngIdle.keepalive', 'ngIdle.localStorage'])
         }
 
         function getExpiry() {
-          var obj = LocalStorage.get('expiry');
+          var obj = SessionStorage.get('expiry');
 
           return obj && obj.time ? new Date(obj.time) : null;
         }
 
         function setExpiry(date) {
-          if (!date) LocalStorage.remove('expiry');
-          else LocalStorage.set('expiry', {id: id, time: date});
+          if (!date) SessionStorage.remove('expiry');
+          else SessionStorage.set('expiry', {id: id, time: date});
         }
 
         var svc = {
@@ -470,15 +470,15 @@ angular.module('ngIdle.title', [])
       };
   }]);
 
-angular.module('ngIdle.localStorage', [])
+angular.module('ngIdle.SessionStorage', [])
   .service('IdleStorageAccessor', ['$window', function($window) {
     return {
       get: function() {
-        return $window.localStorage;
+        return $window.SessionStorage;
       }
     }
   }])
-  .service('IdleLocalStorage', ['IdleStorageAccessor', function(IdleStorageAccessor) {
+  .service('IdleSessionStorage', ['IdleStorageAccessor', function(IdleStorageAccessor) {
     function AlternativeStorage() {
       var storageMap = {};
 
@@ -510,7 +510,7 @@ angular.module('ngIdle.localStorage', [])
        }
     }
 
-    // Safari, in Private Browsing Mode, looks like it supports localStorage but all calls to setItem
+    // Safari, in Private Browsing Mode, looks like it supports SessionStorage but all calls to setItem
     // throw QuotaExceededError. We're going to detect this and just silently drop any calls to setItem
     // to avoid the entire page breaking, without having to do a check at each usage of Storage.
     var storage = getStorage();
