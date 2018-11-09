@@ -15,7 +15,7 @@ module.exports = function(grunt) {
       '*/\n',
     srcHeader: '(function(window, angular, undefined) {\n' +
       '\'use strict\';\n' +
-      'angular.module(\'ngIdle\', [\'ngIdle.keepalive\', \'ngIdle.idle\', \'ngIdle.countdown\', \'ngIdle.title\', \'ngIdle.localStorage\']);\n',
+      'angular.module(\'ngIdle\', [\'ngIdle.keepalive\', \'ngIdle.idle\', \'ngIdle.countdown\', \'ngIdle.title\', \'ngIdle.sessionStorage\']);\n',
     srcFooter: '\n})(window, window.angular);',
     bump: {
       options: {
